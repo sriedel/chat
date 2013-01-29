@@ -1,10 +1,16 @@
 -module( client ).
 -behavior( gen_event ).
--export( [ subscribe/1 ] ).
+-export( [ client_ref/0, subscribe_channel/2, unsubscribe_channel/2 ] ).
 -export( [ init/1, handle_event/2, handle_call/2, handle_info/2, terminate/2, code_change/3 ] ).
 
-subscribe( ChannelHandlerPid ) ->
-  gen_event:add_handler( ChannelHandlerPid, ?MODULE, [] ).
+client_ref() ->
+  make_ref().
+
+subscribe_channel( ClientRef, ChannelName ) ->
+  channel_router:subscribe_client( ClientRef, list_to_atom( ChannelName ) ).
+
+unsubscribe_channel( ClientRef, ChannelName ) ->
+  channel_router:unsubscribe_client( ClientRef, list_to_atom( ChannelName ) ).
 
 % gen_event callbacks
 init([]) -> 

@@ -1,22 +1,22 @@
 -module( message_receiver ).
 -behavior( gen_server ).
--export( [ start_link/1, message/1 ] ).
+-export( [ start_link/0, message/2 ] ).
 -export( [ init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3 ] ).
 
 %% interface methods
-start_link( GlobalChannelHandler ) ->
-  gen_server:start_link( {local, ?MODULE}, ?MODULE, [ GlobalChannelHandler ], [] ).
+start_link() ->
+  gen_server:start_link( {local, ?MODULE}, ?MODULE, [], [] ).
 
-message( Message ) ->
-  gen_server:call( ?MODULE, { message, Message } ).
+message( ChannelName, Message ) ->
+  gen_server:call( ?MODULE, { message, list_to_atom( ChannelName ), Message } ).
 
 %% gen_server callbacks
-init([ChannelHandler]) ->
-  { ok, ChannelHandler }.
+init([]) ->
+  { ok, [] }.
 
-handle_call( {message, Message}, _From, ChannelHandler ) ->
-  gen_event:notify( ChannelHandler, { message, Message } ),
-  { reply, message, ChannelHandler }.
+handle_call( {message, Channel, Message}, _From, State ) ->
+  gen_event:notify( Channel, { message, Message } ),
+  { reply, message, State }.
 
 handle_cast( _Msg, State ) -> { noreply, State }.
 
