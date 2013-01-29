@@ -1,17 +1,9 @@
 -module( client ).
--export( [ initialize/0, connect/2, leave/2, send/2, spawn_receiver/0, receive_loop/0 ] ).
+-export( [ initialize/0, receive_loop/0 ] ).
 
 initialize() ->
-  spawn_receiver().
-
-connect( Server, ReceiverPid ) ->
-  Server ! { join, ReceiverPid }.
-
-leave( Server, ReceiverPid ) ->
-  Server ! { leave, ReceiverPid }.
-
-send( Server, Message ) ->
-  Server ! { message, Message }.
+  spawn( ?MODULE, receive_loop, [] ).
+  
 
 receive_loop() ->
   receive
@@ -20,6 +12,3 @@ receive_loop() ->
   after infinity -> true
   end,
   receive_loop().
-
-spawn_receiver() ->
-  spawn( ?MODULE, receive_loop, [] ).
