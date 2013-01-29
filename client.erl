@@ -1,10 +1,15 @@
 -module( client ).
 -behavior( gen_event ).
--export( [ client_ref/0, subscribe_channel/2, unsubscribe_channel/2 ] ).
+-export( [ client_ref/0, subscribe_channel/2, unsubscribe_channel/2, send_message/2 ] ).
 -export( [ init/1, handle_event/2, handle_call/2, handle_info/2, terminate/2, code_change/3 ] ).
 
 client_ref() ->
   make_ref().
+
+send_message( ChannelName, Message ) ->
+  MessageRef = make_ref(),
+  message_receiver:message( ChannelName, MessageRef, Message ),
+  MessageRef.
 
 subscribe_channel( ClientRef, ChannelName ) ->
   channel_router:subscribe_client( ClientRef, list_to_atom( ChannelName ) ).
@@ -16,9 +21,9 @@ unsubscribe_channel( ClientRef, ChannelName ) ->
 init([ChannelName]) -> 
   {ok, [ChannelName]}.
 
-handle_event( {message, Message}, State) -> 
+handle_event( {message, MessageRef, Message}, State) -> 
   [Channel|_] = State,
-  io:format( "~p: ~p~n", [ Channel, Message ] ),
+  io:format( "~p/~p: ~p~n", [ Channel, MessageRef, Message ] ),
   {ok, State}.
 
 handle_call(_Request, State) -> 
