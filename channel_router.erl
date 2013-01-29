@@ -8,7 +8,7 @@ destroy_channel( ChannelName ) ->
   gen_event:stop( { local, ChannelName } ).
 
 subscribe_client( ClientRef, ChannelName ) ->
-  gen_event:add_handler( ChannelName, { client, ClientRef }, [] ).
+  gen_event:add_handler( ChannelName, { client, ClientRef }, [ChannelName] ).
 
 unsubscribe_client( ClientRef, ChannelName ) ->
   gen_event:delete_handler( ChannelName, { client, ClientRef }, [] ).

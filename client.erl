@@ -13,11 +13,12 @@ unsubscribe_channel( ClientRef, ChannelName ) ->
   channel_router:unsubscribe_client( ClientRef, list_to_atom( ChannelName ) ).
 
 % gen_event callbacks
-init([]) -> 
-  {ok, []}.
+init([ChannelName]) -> 
+  {ok, [ChannelName]}.
 
 handle_event( {message, Message}, State) -> 
-  io:format( "~p~n", [ Message ] ),
+  [Channel|_] = State,
+  io:format( "~p: ~p~n", [ Channel, Message ] ),
   {ok, State}.
 
 handle_call(_Request, State) -> 
