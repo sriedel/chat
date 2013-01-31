@@ -7,9 +7,7 @@ client_ref() ->
   make_ref().
 
 send_message( ChannelName, Message ) ->
-  MessageRef = make_ref(),
-  message_receiver:message( ChannelName, MessageRef, Message ),
-  MessageRef.
+  message_receiver:message( ChannelName, Message ).
 
 subscribe_channel( ClientRef, ChannelName ) ->
   channel_router:subscribe_client( ClientRef, list_to_atom( ChannelName ) ).
