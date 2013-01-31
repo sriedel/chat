@@ -1,0 +1,6 @@
+message_receiver_supervisor:start_link([]).
+{ok, Channel} = channel_router:create_channel( default ).
+C = client:client_ref().
+client:subscribe_channel( C, "default" ).
+client:send_message( "default", "Hello" ).
+
