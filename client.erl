@@ -7,7 +7,7 @@ client_ref() ->
   make_ref().
 
 send_message( ChannelName, Message ) ->
-  message_receiver:message( ChannelName, Message ).
+  message_proxy:message( list_to_atom( ChannelName ), Message ).
 
 subscribe_channel( ClientRef, ChannelName ) ->
   channel_router:subscribe_client( ClientRef, list_to_atom( ChannelName ) ).
@@ -19,8 +19,7 @@ unsubscribe_channel( ClientRef, ChannelName ) ->
 init([ChannelName]) -> 
   {ok, [ChannelName]}.
 
-handle_event( {message, MessageRef, Message}, State) -> 
-  [Channel|_] = State,
+handle_event( {message, Channel, MessageRef, Message}, State) -> 
   io:format( "~p/~p: ~p~n", [ Channel, MessageRef, Message ] ),
   {ok, State}.
 
