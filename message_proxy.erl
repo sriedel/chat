@@ -24,7 +24,7 @@ handle_call( {message, Channel, Message}, _From, State ) ->
 
 %% message outgoing to client
 handle_cast( { message, Channel, MessageRef, Message }, State ) ->
-  gen_event:notify( Channel, { message, Channel, MessageRef, Message } ),
+  catch gen_event:notify( Channel, { message, Channel, MessageRef, Message } ),
   { noreply, State };
 handle_cast( _Msg, State ) -> { noreply, State }.
 

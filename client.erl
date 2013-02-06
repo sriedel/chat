@@ -10,10 +10,12 @@ send_message( ChannelName, Message ) ->
   message_proxy:message( list_to_atom( ChannelName ), Message ).
 
 subscribe_channel( ClientRef, ChannelName ) ->
-  channel_router:subscribe_client( ClientRef, list_to_atom( ChannelName ) ).
+  Channel = list_to_atom( ChannelName ),
+  channel_proxy:subscribe_client( ClientRef, Channel ).
 
 unsubscribe_channel( ClientRef, ChannelName ) ->
-  channel_router:unsubscribe_client( ClientRef, list_to_atom( ChannelName ) ).
+  Channel = list_to_atom( ChannelName ),
+  channel_proxy:unsubscribe_client( ClientRef, Channel ).
 
 % gen_event callbacks
 init([ChannelName]) -> 
