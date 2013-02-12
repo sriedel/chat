@@ -1,4 +1,4 @@
--module( message_receiver_supervisor ).
+-module( message_proxy_supervisor ).
 -export( [ start_link/1, init/1 ] ).
 -behavior( supervisor ).
 
@@ -7,11 +7,11 @@ start_link( Args ) ->
 
 init(Args) ->
   { ok, { { one_for_one, 3, 10 },
-          [ { message_receiver,
-              { message_receiver, start_link, Args },
+          [ { message_proxy,
+              { message_proxy, start_link, [ Args ] },
               permanent,
               1000,
               worker,
-              [ message_receiver ] 
+              [ message_proxy ] 
             } ] 
         } }.

@@ -1,16 +1,19 @@
 -module( channel_manager ).
 -behavior( gen_server ).
--export( [ start_link/1, create_channel/1, destroy_channel/1 ] ).
+-export( [ start_link/0, start_link/1, create_channel/1, destroy_channel/1 ] ).
 -export( [ init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3 ] ).
+
+start_link() ->
+  gen_server:start_link( { global, ?MODULE }, ?MODULE, [], [] ).
+
+start_link( Args ) ->
+  gen_server:start_link( { global, ?MODULE }, ?MODULE, Args, [] ).
 
 create_channel( Channel ) ->
   gen_server:call( { global, ?MODULE }, { create, Channel } ).
 
 destroy_channel( Channel ) ->
   gen_server:call( { global, ?MODULE }, { destroy, Channel } ).
-
-start_link( Args ) ->
-  gen_server:start_link( { global, ?MODULE }, ?MODULE, Args, [] ).
 
 %% gen_server callbacks
 init([]) ->
