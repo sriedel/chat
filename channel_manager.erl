@@ -20,7 +20,7 @@ init([]) ->
   { ok, [] }.
 
 handle_call( {create, Channel}, _From, State ) ->
-  gen_event:start( { global, Channel } ),
+  supervisor:start_child( { global, message_router_supervisor }, [ Channel ] ),
   gen_event:add_handler( { global, Channel }, { message_router, Channel }, [ Channel ] ),
   { reply, { created, Channel }, State };
 

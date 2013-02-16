@@ -1,17 +1,16 @@
 -module( message_router ).
 -behavior( gen_event ).
--export( [ subscribe_client/2, unsubscribe_client/2] ).
+-export( [ start_link/1 ] ).
 -export( [ init/1, handle_event/2, handle_call/2, handle_info/2, terminate/2, code_change/3 ] ).
 
-subscribe_client( ClientRef, ChannelName ) ->
-  gen_event:add_handler( ChannelName, { client, ClientRef }, [ChannelName] ).
-
-unsubscribe_client( ClientRef, ChannelName ) ->
-  gen_event:delete_handler( ChannelName, { client, ClientRef }, [] ).
+start_link( Channel ) ->
+  gen_event:start_link( { global, Channel } ).
 
 %% gen_event callbacks
-init([ChannelName]) -> 
-  {ok, [ChannelName]}.
+
+init(ChannelName) -> 
+  process_flag( trap_exit, true ),
+  {ok, ChannelName}.
 
 handle_event( {message, Channel, MessageRef, Message}, State) -> 
   gen_server:abcast( nodes(), message_proxy, { message, Channel, MessageRef, Message } ),
