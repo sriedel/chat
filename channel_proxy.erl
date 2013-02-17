@@ -8,8 +8,9 @@ destroy_channel( Channel ) ->
   channel_manager:destroy_channel( Channel ).
 
 subscribe_client( ClientRef, Channel ) ->
+  % FIXME: Racecondition here!
   case whereis( Channel ) of
-    undefined -> gen_event:start( { local, Channel } ) ;
+    undefined -> supervisor:start_child( channel_supervisor, [ Channel ] ) ;
     true      -> true
   end,
   gen_event:add_handler( Channel, { client, ClientRef }, [ Channel ] ).
@@ -20,3 +21,4 @@ unsubscribe_client( ClientRef, Channel ) ->
     [] -> gen_event:stop( Channel ) ;
     true -> true
   end.
+

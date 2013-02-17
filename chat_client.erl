@@ -7,7 +7,7 @@ start( _Type, Args ) ->
   pong = net_adm:ping( MainNode ), %% connect to main node
 
   { supervisor_args, SupervisorArgs } = lists:keyfind( supervisor_args, 1, Args ),
-  message_proxy_supervisor:start_link( SupervisorArgs ).
+  chat_client_supervisor:start_link( SupervisorArgs ).
 
 stop( _State ) ->
   ok.
